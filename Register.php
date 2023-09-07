@@ -22,9 +22,9 @@ if (isset($_POST["login"])) {
             </div>";
     } else {
         echo "<div class='form'>
-                <h3>Nie wypełniłeś wymaganych pól lub wystąpił błąd.</h3><br/>
-                <p class='link'>Kliknij tutaj, aby ponowić próbę <a href='Register.php'>rejestracji</a>.</p>
-                </div>";
+            <h3>Nie wypełniłeś wymaganych pól lub wystąpił błąd.</h3><br/>
+            <p class='link'>Kliknij tutaj, aby ponowić próbę <a href='Register.php'>rejestracji</a>.</p>
+            </div>";
     }
 }
 ?>
