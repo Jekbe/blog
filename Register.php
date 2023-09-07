@@ -1,3 +1,4 @@
+<?php
 session_start();
 $conn = new mysqli("localhost", "root", "", "blog");
     if ($conn -> connect_error){
@@ -5,29 +6,28 @@ $conn = new mysqli("localhost", "root", "", "blog");
     }
 
 if (isset($_POST["login"])) {
-            $login = $_POST["name"];
+    $login = $_POST["name"];
     $email = $_POST["email"];
     $password = $_POST["password"];
-    $confirm_password = $_POST["confirm_password"];
     $is_artist = isset($_POST["is_artist"]) ? 1 : 0;
 
-        $hashed_password = md5($password);
+    $hashed_password = md5($password);
+    $sql = "INSERT INTO Uzytkownicy (Nick, Adres_email, Haslo, Jest_artysta) VALUES ('$login', '$email', '$hashed_password', '$is_artist')";
+    $result = $conn->query($sql);
 
-
-        $sql = "INSERT INTO Uzytkownicy (Imie, Adres_email, Haslo, Jest_artysta) VALUES ('$login', '$email', '$hashed_password', '$is_artist')";
-        $result = $conn->query($sql);
-
-        if ($result) {
-            echo "<div class='form'>
-                <h3>Zostałeś pomyślnie zarejestrowany.</h3><br/>
-                <p class='link'>Kliknij tutaj, aby się <a href='Login.php'>zalogować</a></p>
-                </div>";
-        } else {
-            echo "<div class='form'>
+    if ($result) {
+        echo "<div class='form'>
+            <h3>Zostałeś pomyślnie zarejestrowany.</h3><br/>
+            <p class='link'>Kliknij tutaj, aby się <a href='Login.php'>zalogować</a></p>
+            </div>";
+    } else {
+        echo "<div class='form'>
                 <h3>Nie wypełniłeś wymaganych pól lub wystąpił błąd.</h3><br/>
-                <p class='link'>Kliknij tutaj, aby ponowić próbę <a href='Registration.php'>rejestracji</a>.</p>
+                <p class='link'>Kliknij tutaj, aby ponowić próbę <a href='Register.php'>rejestracji</a>.</p>
                 </div>";
-        }
+    }
+}
+?>
 
 <!DOCTYPE html>
 <html lang="pl">
@@ -35,12 +35,12 @@ if (isset($_POST["login"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rejestracja</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="Style.css">
 </head>
 <body>
     <div class="container">
         <h1>Rejestracja</h1>
-        <form action="register.php" method="POST">
+        <form action="Register.php" method="POST">
             <div class="form-group">
                 <label for="name">Nick:</label>
                 <input type="text" id="name" name="nick" required>
@@ -61,7 +61,7 @@ if (isset($_POST["login"])) {
                 <button type="submit">Zarejestruj</button>
             </div>
         </form>
-        <p>Masz już konto? <a href="login.php">Zaloguj się</a></p>
+        <p>Masz już konto? <a href="Login.php">Zaloguj się</a></p>
     </div>
 </body>
 </html>

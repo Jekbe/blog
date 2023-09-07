@@ -19,7 +19,7 @@ body {
 h1 {
     font-size: 24px;
     margin-bottom: 20px;
-    color: #007bff; /* Kolor nagłówka */
+    color: #007bff;
 }
 
 .form-group {
@@ -29,7 +29,7 @@ h1 {
 label {
     display: block;
     margin-bottom: 5px;
-    color: #007bff; /* Kolor etykiety */
+    color: #007bff;
 }
 
 input[type="text"],
@@ -39,7 +39,7 @@ input[type="password"] {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #444; /* Kolor tła inputów */
+    background-color: #444;
     color: #fff;
 }
 
