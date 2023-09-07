@@ -6,7 +6,7 @@ if ($conn -> connect_error){
 }
 
 if (isset($_POST["login"])) {
-    $login = $_POST["login"];
+    $login = $_POST["email"];
     $haslo = $_POST["haslo"];
     $sql = "SELECT * FROM Uzytkownicy WHERE Adres_email='$login' AND haslo='" . md5($haslo) . "'";
     $result = $conn->query($sql);
