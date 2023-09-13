@@ -1,7 +1,7 @@
 <?php
     session_start();
     if (!isset($_SESSION["login"])) {
-        header("Location: Session/Login.php");
+        header("Location: Login.php");
         exit;
     }
 ?>
@@ -19,9 +19,9 @@
         <h1>Draw&play</h1>
         <?php
         // Sprawdź, czy użytkownik jest zalogowany i artystą, jeśli tak, wyświetl przycisk "Dodaj post".
-        if ($user_is_artist) {
-            echo '<a href="add_post.php" class="button">Dodaj post</a>';
-        }
+        //if ($user_is_artist) {
+            //echo '<a href="add_post.php" class="button">Dodaj post</a>';
+        //}
         ?>
         <a href="logout.php" class="button">Wyloguj się</a>
     </header>

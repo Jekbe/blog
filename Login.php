@@ -15,7 +15,10 @@ if (isset($_POST["login"])) {
         $_SESSION["login"] = $login;
         $row = $result->fetch_assoc();
         $_SESSION["id"] = $row["id"];
-        header("Location: ../Index.php");
+        $_SESSION["artist"] = $row["Jest_artysta"];
+        $_SESSION["portfel"] = $row["Portfel"];
+        $_SESSION["awatar"] = $row["Awatar"];
+        header("Location: Index.php");
         exit;
     }
     else {
