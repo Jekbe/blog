@@ -4,7 +4,8 @@ $conn = new mysqli("localhost", "root", "", "blog");
         die("Connection failed: " . $conn->connect_error);
     }
 
-if (isset($_POST["login"])) {
+if (isset($_POST["nick"])) {
+    echo "is set";
     $login = $_POST["nick"];
     $email = $_POST["email"];
     $password = $_POST["password"];
@@ -12,11 +13,8 @@ if (isset($_POST["login"])) {
 
     $hashed_password = md5($password);
     $sql = "INSERT INTO Uzytkownicy (Nick, Adres_email, Haslo, Jest_artysta) VALUES ('$login', '$email', '$hashed_password', '$is_artist')";
+    echo $sql;
     $result = $conn->query($sql);
-
-    if(!$result){
-        die($conn->error);
-    }
 
     if ($result) {
         echo "<div class='form'>

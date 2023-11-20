@@ -5,7 +5,7 @@ if ($conn -> connect_error){
     die("Connection failed: " . $conn->connect_error);
 }
 
-if (isset($_POST["login"])) {
+if (isset($_POST["email"])) {
     $login = $_POST["email"];
     $haslo = $_POST["haslo"];
     $sql = "SELECT * FROM Uzytkownicy WHERE Adres_email='$login' AND haslo='" . md5($haslo) . "'";
@@ -14,7 +14,7 @@ if (isset($_POST["login"])) {
     if ($result->num_rows == 1) {
         $_SESSION["login"] = $login;
         $row = $result->fetch_assoc();
-        $_SESSION["id"] = $row["id"];
+        $_SESSION["id"] = $row["ID"];
         $_SESSION["artist"] = $row["Jest_artysta"];
         $_SESSION["portfel"] = $row["Portfel"];
         $_SESSION["awatar"] = $row["Awatar"];
@@ -48,7 +48,7 @@ if (isset($_POST["login"])) {
         </div>
         <div class="form-group">
             <label for="password">Hasło:</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="haslo" required>
         </div>
         <div class="form-group">
             <button type="submit">Zaloguj</button>
