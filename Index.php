@@ -31,11 +31,12 @@
 
             echo "<tr>";
             echo "<td>$id</td>";
-            echo "<td>$tytul</td>";
-            echo "<td>$autor</td>";
+            echo "<td><a href='Post.php?id=$id'>$tytul</a></td>";
+            echo "<td><a href='Profil.php?id=$id_autora'>$autor</a></td>";
             echo "<td>$data</td>";
             echo "</tr>";
         }
+        echo "</table>";
     }
 ?>
 
@@ -55,6 +56,15 @@
         ?>
         <a href="Logout.php" class="button">Wyloguj się</a>
     </header>
+
+    <section class="dodaj_post">
+        <?php
+            $artysta = $_SESSION["artist"];
+            if ($artysta){
+                echo "<a href='Dodaj_post.php'>Dodaj post</a>";
+            }
+        ?>
+    </section>
 
     <section class="latest-posts">
         <h2>Najnowsze od obserwowanych</h2>
