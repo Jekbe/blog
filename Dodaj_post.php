@@ -1,76 +1,67 @@
 <?php
-session_start();
+    session_start();
 
-if (!isset($_SESSION["login"])) {
-    header("Location: Login.php");
-    exit;
-}
+    if (!isset($_SESSION["login"])) {
+        header("Location: Login.php");
+        exit;
+    }
 
-$conn = new mysqli("localhost", "root", "", "blog");
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+    $conn = new mysqli("localhost", "root", "", "blog");
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $title = $_POST["title"];
-    $content = $_POST["content"];
-    $isAdultContent = isset($_POST["adult"]) ? 1 : 0; // checkbox z oznaczeniem 18+
-    $authorId = $_SESSION["id"];
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $title = $_POST["title"];
+        $content = $_POST["content"];
+        $isAdultContent = isset($_POST["adult"]) ? 1 : 0;
+        $authorId = $_SESSION["id"];
 
-    // Wstawianie postu do tabeli Posty
-    $sqlPost = "INSERT INTO Posty (Tytul_postu, Zawartosc, Oznaczenie_18plus, ID_autora, Data_utworzenia) 
-                VALUES ('$title', '$content', '$isAdultContent', '$authorId', CURRENT_TIMESTAMP)";
+        $sqlPost = "INSERT INTO Posty (Tytul_postu, Tresc_postu, Oznaczenie_18plus, ID_autora, Data_utworzenia) VALUES ('$title', '$content', '$isAdultContent', '$authorId', CURRENT_TIMESTAMP)";
 
-    if ($conn->query($sqlPost) === TRUE) {
-        $postId = $conn->insert_id; // Pobierz ID ostatnio dodanego postu
+        if ($conn->query($sqlPost) === TRUE) {
+            $postId = $conn->insert_id;
 
-        // Wstawianie zdjęć do tabeli Zdjecia
-        if (!empty($_FILES["images"]["name"])) {
-            $targetDirectory = "uploads/"; // Katalog, w którym będą przechowywane zdjęcia
+            if (!empty($_FILES["images"]["name"])) {
+                $targetDirectory = "Obrazki/";
 
-            foreach ($_FILES["images"]["name"] as $key => $filename) {
-                $targetFilePath = $targetDirectory . basename($filename);
-                $uploadOk = 1;
-                $imageFileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
+                foreach ($_FILES["images"]["name"] as $key => $filename) {
+                    $targetFilePath = $targetDirectory . basename($filename);
+                    $uploadOk = 1;
+                    $imageFileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
 
-                // Sprawdź, czy plik jest obrazem
-                $check = getimagesize($_FILES["images"]["tmp_name"][$key]);
-                if ($check === false) {
-                    echo "Plik nie jest obrazem.";
-                    $uploadOk = 0;
-                }
+                    $check = getimagesize($_FILES["images"]["tmp_name"][$key]);
+                    if ($check === false) {
+                        echo "Plik nie jest obrazem.";
+                        $uploadOk = 0;
+                    }
 
-                // Sprawdź, czy plik już istnieje
-                if (file_exists($targetFilePath)) {
-                    echo "Przepraszamy, plik już istnieje.";
-                    $uploadOk = 0;
-                }
+                    if (file_exists($targetFilePath)) {
+                        echo "Przepraszamy, plik już istnieje.";
+                        $uploadOk = 0;
+                    }
 
-                // Sprawdź rozszerzenia pliku
-                if ($imageFileType !== "jpg" && $imageFileType !== "jpeg" && $imageFileType !== "png" && $imageFileType !== "gif") {
-                    echo "Przepraszamy, tylko pliki JPG, JPEG, PNG i GIF są dozwolone.";
-                    $uploadOk = 0;
-                }
+                    if ($imageFileType !== "jpg" && $imageFileType !== "jpeg" && $imageFileType !== "png" && $imageFileType !== "gif") {
+                        echo "Przepraszamy, tylko pliki JPG, JPEG, PNG i GIF są dozwolone.";
+                        $uploadOk = 0;
+                    }
 
-                // Jeżeli wszystko jest w porządku, to przesyłamy plik
-                if ($uploadOk === 1) {
-                    if (move_uploaded_file($_FILES["images"]["tmp_name"][$key], $targetFilePath)) {
-                        // Wstaw zdjęcie do bazy danych
-                        $sqlImage = "INSERT INTO Zdjecia (Sciezka_do_zdjecia, ID_postu) 
-                                     VALUES ('$targetFilePath', '$postId')";
-                        $conn->query($sqlImage);
-                    } else {
-                        echo "Wystąpił błąd podczas przesyłania pliku.";
+                    if ($uploadOk === 1) {
+                        if (move_uploaded_file($_FILES["images"]["tmp_name"][$key], $targetFilePath)) {
+                            $sqlImage = "INSERT INTO Zdjecia (Sciezka, ID_postu) VALUES ('$targetFilePath', '$postId')";
+                            $conn->query($sqlImage);
+                        } else {
+                            echo "Wystąpił błąd podczas przesyłania pliku.";
+                        }
                     }
                 }
             }
-        }
 
-        echo "<p>Post został dodany pomyślnie!</p>";
-    } else {
-        echo "Error: " . $sqlPost . "<br>" . $conn->error;
+            echo "<p>Post został dodany pomyślnie!</p>";
+        } else {
+            echo "Error: " . $sqlPost . "<br>" . $conn->error;
+        }
     }
-}
 ?>
 
 <!DOCTYPE html>
