@@ -49,7 +49,7 @@
     <link rel="stylesheet" href="Style.css">
 </head>
 <body>
-    <header>
+    <header class="container">
         <h1>Draw&play</h1>
         <?php
 
@@ -57,7 +57,7 @@
         <a href="Logout.php" class="button">Wyloguj się</a>
     </header>
 
-    <section class="dodaj_post">
+    <section class="dodaj_post container">
         <?php
             $artysta = $_SESSION["artist"];
             if ($artysta){
@@ -66,7 +66,7 @@
         ?>
     </section>
 
-    <section class="latest-posts">
+    <section class="latest-posts container">
         <h2>Najnowsze od obserwowanych</h2>
         <?php
             $user = $_SESSION["id"];
@@ -92,7 +92,7 @@
         ?>
     </section>
 
-    <section class="all-posts">
+    <section class="all-posts container">
         <h2>Wszystkie posty</h2>
         <?php
             $sql_all_posty = "SELECT * FROM Posty";
