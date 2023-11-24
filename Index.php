@@ -6,9 +6,7 @@
     }
 
     $conn = new mysqli("localhost", "root", "", "blog");
-    if ($conn -> connect_error){
-        die("Connection failed: " . $conn->connect_error);
-    }
+    if ($conn -> connect_error) die("Connection failed: " . $conn->connect_error);
 
     function post($posty, $conn){
         echo "<table>";
@@ -52,7 +50,9 @@
     <header class="container">
         <h1>Draw&play</h1>
         <?php
-
+            $nick = $_SESSION["nick"];
+            $awatar = $_SESSION["awatar"];
+            echo "<a href='Profil.php?'>$nick <img src='$awatar'></a> <br>";
         ?>
         <a href="Logout.php" class="button">Wyloguj się</a>
     </header>
@@ -60,9 +60,7 @@
     <section class="dodaj_post container">
         <?php
             $artysta = $_SESSION["artist"];
-            if ($artysta){
-                echo "<a href='Dodaj_post.php'>Dodaj post</a>";
-            }
+            if ($artysta) echo "<a href='Dodaj_post.php'>Dodaj post</a>";
         ?>
     </section>
 
@@ -70,38 +68,31 @@
         <h2>Najnowsze od obserwowanych</h2>
         <?php
             $user = $_SESSION["id"];
-            $sql_obserwowani = "SELECT ID_obserwowanego FROM Obserwowani WHERE ID_obserwujacego = $user LIMIT 10";
+            $dorosly = $_SESSION["dorosly"];
+            $sql_obserwowani = "SELECT ID_obserwowanego FROM Obserwowani WHERE ID_obserwujacego = $user";
             $result_obserwowani = $conn->query($sql_obserwowani);
             if ($result_obserwowani->num_rows > 0){
                 $obserwowani = [];
-                while ($row = $result_obserwowani->fetch_assoc()){
-                    $obserwowani[] = $row['ID_obserwowanego'];
-                }
+                while ($row = $result_obserwowani->fetch_assoc()) $obserwowani[] = $row['ID_obserwowanego'];
 
                 $obserwowani_str = implode(",", $obserwowani);
-                $sql_posty = "SELECT * FROM Posty WHERE ID_autora IN ($obserwowani_str)";
+                $sql_posty = $dorosly ? "SELECT * FROM Posty WHERE ID_autora IN ($obserwowani_str) LIMIT 10" : "SELECT * FROM Posty WHERE ID_autora IN ($obserwowani_str) AND Oznaczenie_18plus = false LIMIT 10 ORDER BY Data_utworzenia DESC";
                 $result_posty = $conn->query($sql_posty);
-                if ($result_posty->num_rows > 0){
-                    post($result_posty, $conn);
-                } else{
-                    echo "Brak postów do wyświetlenia";
-                }
-            } else{
-                echo "Nie obserwujesz nikogo";
-            }
+
+                if ($result_posty->num_rows > 0) post($result_posty, $conn);
+                else echo "Brak postów do wyświetlenia";
+            } else echo "Nie obserwujesz nikogo";
         ?>
     </section>
 
     <section class="all-posts container">
         <h2>Wszystkie posty</h2>
         <?php
-            $sql_all_posty = "SELECT * FROM Posty";
+            $sql_all_posty = $dorosly ? "SELECT * FROM Posty" : "SELECT * FROM Posty WHERE Oznaczenie_18plus = false ORDER BY Data_utworzenia DESC";
             $result_all_posty = $conn->query($sql_all_posty);
-            if ($result_all_posty->num_rows > 0){
-                post($result_all_posty, $conn);
-            } else{
-                echo "Brak postów do wyświetlenia";
-            }
+
+            if ($result_all_posty->num_rows > 0) post($result_all_posty, $conn);
+            else echo "Brak postów do wyświetlenia";
 
             $conn->close();
         ?>

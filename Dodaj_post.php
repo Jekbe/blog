@@ -12,23 +12,23 @@
     }
 
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
-        $title = $_POST["title"];
-        $content = $_POST["content"];
-        $isAdultContent = isset($_POST["adult"]) ? 1 : 0;
-        $authorId = $_SESSION["id"];
+        $tytul = $_POST["title"];
+        $tresc = $_POST["content"];
+        $czy18 = isset($_POST["adult"]) ? 1 : 0;
+        $autorId = $_SESSION["id"];
 
-        $sqlPost = "INSERT INTO Posty (Tytul_postu, Tresc_postu, Oznaczenie_18plus, ID_autora, Data_utworzenia) VALUES ('$title', '$content', '$isAdultContent', '$authorId', CURRENT_TIMESTAMP)";
+        $sqlPost = "INSERT INTO Posty (Tytul_postu, Tresc_postu, Oznaczenie_18plus, ID_autora, Data_utworzenia) VALUES ('$tytul', '$tresc', '$czy18', '$autorId', CURRENT_TIMESTAMP)";
 
         if ($conn->query($sqlPost) === TRUE) {
             $postId = $conn->insert_id;
 
-            if (!empty($_FILES["images"]["name"])) {
-                $targetDirectory = "Obrazki/";
+            if (!empty($_FILES["images"]["name"][0])) {
+                $lokalizacja = "Obrazki/";
 
-                foreach ($_FILES["images"]["name"] as $key => $filename) {
-                    $targetFilePath = $targetDirectory . basename($filename);
+                foreach ($_FILES["images"]["name"] as $key => $nazwa_pliku) {
+                    $sciezka = $lokalizacja . basename($nazwa_pliku);
                     $uploadOk = 1;
-                    $imageFileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
+                    $imageFileType = strtolower(pathinfo($sciezka, PATHINFO_EXTENSION));
 
                     $check = getimagesize($_FILES["images"]["tmp_name"][$key]);
                     if ($check === false) {
@@ -36,7 +36,7 @@
                         $uploadOk = 0;
                     }
 
-                    if (file_exists($targetFilePath)) {
+                    if (file_exists($sciezka)) {
                         echo "Przepraszamy, plik już istnieje.";
                         $uploadOk = 0;
                     }
@@ -47,20 +47,16 @@
                     }
 
                     if ($uploadOk === 1) {
-                        if (move_uploaded_file($_FILES["images"]["tmp_name"][$key], $targetFilePath)) {
-                            $sqlImage = "INSERT INTO Zdjecia (Sciezka, ID_postu) VALUES ('$targetFilePath', '$postId')";
+                        if (move_uploaded_file($_FILES["images"]["tmp_name"][$key], $sciezka)) {
+                            $sqlImage = "INSERT INTO Zdjecia (Sciezka, ID_postu) VALUES ('$sciezka', '$postId')";
                             $conn->query($sqlImage);
-                        } else {
-                            echo "Wystąpił błąd podczas przesyłania pliku.";
-                        }
+                        } else echo "Wystąpił błąd podczas przesyłania pliku.";
                     }
                 }
             }
 
             echo "<p>Post został dodany pomyślnie!</p>";
-        } else {
-            echo "Error: " . $sqlPost . "<br>" . $conn->error;
-        }
+        } else echo "Error: " . $sqlPost . "<br>" . $conn->error;
     }
 ?>
 
@@ -101,6 +97,10 @@
                 <button type="submit">Dodaj Post</button>
             </div>
         </form>
+    </section>
+
+    <section class="powrot container">
+        <a href="Index.php">Powrót</a>
     </section>
 </body>
 </html>

@@ -1,9 +1,7 @@
 <?php
 session_start();
 $conn = new mysqli("localhost", "root", "", "blog");
-if ($conn -> connect_error){
-    die("Connection failed: " . $conn->connect_error);
-}
+if ($conn -> connect_error) die("Connection failed: " . $conn->connect_error);
 
 if (isset($_POST["email"])) {
     $login = $_POST["email"];
@@ -18,15 +16,15 @@ if (isset($_POST["email"])) {
         $_SESSION["artist"] = $row["Jest_artysta"];
         $_SESSION["portfel"] = $row["Portfel"];
         $_SESSION["awatar"] = $row["Awatar"];
+        $_SESSION["dorosly"] = $row["Pelnoletni"];
+        $_SESSION["nick"] = $row["Nick"];
         header("Location: Index.php");
         exit;
     }
-    else {
-        echo "<div class='form'>
-                        <h3>Nieprawidłowy login lub hasło.</h3><br/>
-                        <p class='link'>Ponów próbę <a href='Login.php'>logowania</a>.</p>
-                        </div>";
-    }
+    else echo "<div class='form'>
+        <h3>Nieprawidłowy login lub hasło.</h3><br/>
+        <p class='link'>Ponów próbę <a href='Login.php'>logowania</a>.</p>
+        </div>";
 }
 ?>
 

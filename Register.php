@@ -1,8 +1,6 @@
 <?php
 $conn = new mysqli("localhost", "root", "", "blog");
-    if ($conn -> connect_error){
-        die("Connection failed: " . $conn->connect_error);
-    }
+    if ($conn -> connect_error) die("Connection failed: " . $conn->connect_error);
 
 if (isset($_POST["nick"])) {
     echo "is set";
@@ -16,17 +14,14 @@ if (isset($_POST["nick"])) {
     echo $sql;
     $result = $conn->query($sql);
 
-    if ($result) {
-        echo "<div class='form'>
-            <h3>Zostałeś pomyślnie zarejestrowany.</h3><br/>
-            <p class='link'>Kliknij tutaj, aby się <a href='Login.php'>zalogować</a></p>
-            </div>";
-    } else {
-        echo "<div class='form'>
-            <h3>Nie wypełniłeś wymaganych pól lub wystąpił błąd.</h3><br/>
-            <p class='link'>Kliknij tutaj, aby ponowić próbę <a href='Register.php'>rejestracji</a>.</p>
-            </div>";
-    }
+    if ($result) echo "<div class='form'>
+        <h3>Zostałeś pomyślnie zarejestrowany.</h3><br/>
+        <p class='link'>Kliknij tutaj, aby się <a href='Login.php'>zalogować</a></p>
+        </div>";
+    else echo "<div class='form'>
+        <h3>Nie wypełniłeś wymaganych pól lub wystąpił błąd.</h3><br/>
+        <p class='link'>Kliknij tutaj, aby ponowić próbę <a href='Register.php'>rejestracji</a>.</p>
+        </div>";
 }
 ?>
 
