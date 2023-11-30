@@ -16,7 +16,7 @@ if (isset($_POST["email"])) {
         $_SESSION["artist"] = $row["Jest_artysta"];
         $_SESSION["portfel"] = $row["Portfel"];
         $_SESSION["awatar"] = $row["Awatar"];
-        $_SESSION["dorosly"] = $row["Pelnoletni"];
+        $_SESSION["pelnoletni"] = $row["Pelnoletni"];
         $_SESSION["nick"] = $row["Nick"];
         header("Location: Index.php");
         exit;

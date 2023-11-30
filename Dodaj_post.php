@@ -55,7 +55,8 @@
                 }
             }
 
-            echo "<p>Post został dodany pomyślnie!</p>";
+            header("Location: Index.php");
+            exit;
         } else echo "Error: " . $sqlPost . "<br>" . $conn->error;
     }
 ?>

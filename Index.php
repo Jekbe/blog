@@ -43,7 +43,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Draw&play</title>
+    <title>Strona główna</title>
     <link rel="stylesheet" href="Style.css">
 </head>
 <body>
@@ -52,7 +52,8 @@
         <?php
             $nick = $_SESSION["nick"];
             $awatar = $_SESSION["awatar"];
-            echo "<a href='Profil.php?'>$nick <img src='$awatar'></a> <br>";
+            $user_id = $_SESSION["id"];
+            echo "<a href='Profil.php?id=$user_id'>$nick <img src='$awatar' width='20px'></a> <br>";
         ?>
         <a href="Logout.php" class="button">Wyloguj się</a>
     </header>
@@ -68,7 +69,7 @@
         <h2>Najnowsze od obserwowanych</h2>
         <?php
             $user = $_SESSION["id"];
-            $dorosly = $_SESSION["dorosly"];
+            $dorosly = $_SESSION["pelnoletni"];
             $sql_obserwowani = "SELECT ID_obserwowanego FROM Obserwowani WHERE ID_obserwujacego = $user";
             $result_obserwowani = $conn->query($sql_obserwowani);
             if ($result_obserwowani->num_rows > 0){
@@ -76,7 +77,7 @@
                 while ($row = $result_obserwowani->fetch_assoc()) $obserwowani[] = $row['ID_obserwowanego'];
 
                 $obserwowani_str = implode(",", $obserwowani);
-                $sql_posty = $dorosly ? "SELECT * FROM Posty WHERE ID_autora IN ($obserwowani_str) LIMIT 10" : "SELECT * FROM Posty WHERE ID_autora IN ($obserwowani_str) AND Oznaczenie_18plus = false LIMIT 10 ORDER BY Data_utworzenia DESC";
+                $sql_posty = $dorosly ? "SELECT * FROM Posty WHERE ID_autora IN ($obserwowani_str) LIMIT 10 ORDER BY Data_utworzenia DESC" : "SELECT * FROM Posty WHERE ID_autora IN ($obserwowani_str) AND Oznaczenie_18plus = false LIMIT 10 ORDER BY Data_utworzenia DESC";
                 $result_posty = $conn->query($sql_posty);
 
                 if ($result_posty->num_rows > 0) post($result_posty, $conn);
@@ -88,7 +89,7 @@
     <section class="all-posts container">
         <h2>Wszystkie posty</h2>
         <?php
-            $sql_all_posty = $dorosly ? "SELECT * FROM Posty" : "SELECT * FROM Posty WHERE Oznaczenie_18plus = false ORDER BY Data_utworzenia DESC";
+            $sql_all_posty = $dorosly ? "SELECT * FROM Posty ORDER BY Data_utworzenia DESC" : "SELECT * FROM Posty WHERE Oznaczenie_18plus = false ORDER BY Data_utworzenia DESC";
             $result_all_posty = $conn->query($sql_all_posty);
 
             if ($result_all_posty->num_rows > 0) post($result_all_posty, $conn);

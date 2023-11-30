@@ -78,6 +78,12 @@
                 else echo "brak obrazów";
                 echo "</section>";
             }
+
+            if ($_SESSION["id"] == $id_autora){
+                echo "<section class='Usun container'>
+                        <a href='Usun.php?id=$post_id'>Usuń post</a>
+                    </section>";
+            }
         ?>
 
     <section class="powrot container">
