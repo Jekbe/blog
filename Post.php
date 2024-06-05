@@ -52,7 +52,7 @@
         </section>
 
         <?php
-            if ($oznaczenie_18plus) if ($_SESSION["adult"]) {
+            if ($oznaczenie_18plus) if ($_SESSION["pelnoletni"]) {
                 echo " <section class='tresc container'>
                         $tresc
                     </section>
@@ -61,10 +61,11 @@
                     while ($row_obrazy = $result_obrazy->fetch_assoc()) {
                         echo "<img src='{$row_obrazy['Sciezka']}'>";
                     }
+                    echo "</section>";
                 }
                 else echo "brak obrazów
                     </section>";
-            } else echo "Zawartość posta jest przeznaczona dla osób pełnoletnich.";
+            } else echo "<section class=container> Zawartość posta jest przeznaczona dla osób pełnoletnich.</section>";
             else {
                 echo " <section class='tresc container'>
                         $tresc
@@ -85,6 +86,11 @@
                     </section>";
             }
         ?>
+
+    <section class="komentarze container">
+        <h3>Komentarze</h3>
+
+    </section>
 
     <section class="powrot container">
         <a href="Index.php">Powrót</a>

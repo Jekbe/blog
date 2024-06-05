@@ -13,6 +13,7 @@
     $sql_profil = "SELECT * FROM Uzytkownicy WHERE ID=$profil_id";
     $result_profil = $conn->query($sql_profil);
     $row_profil = $result_profil->fetch_assoc();
+    $profil_nick = $row_profil['Nick'];
 ?>
 
 <!doctype html>
@@ -43,7 +44,7 @@
         <img src="<?php echo $row_profil['Awatar']?>">
         <br>
         <?php
-            echo $row_profil["Nick"], "<br>";
+            echo $profil_nick, "<br>";
             echo "Jest z nami od: ", $row_profil["Data_rejestracji"], "<br>";
         ?>
     </section>
@@ -56,7 +57,7 @@
                 echo $row_profil["Pelnoletni"];
                 if ($row_profil["Pelnoletni"]) echo "<a href='Zmien_wiek.php?value=0'>Wyłącz treści dla dorosłych</a>";
                 else echo "<a href='Zmien_wiek.php?value=1'>Włącz treści dla dorosłych</a>";
-                echo "<br> <a href='Doladuj_portfel.php'>Doładuj portfel</a>";
+                echo "<br> <a href='Doladuj_portfel.php?id=$profil_id'>Doładuj portfel</a>";
             } else{
                 $sql_obserwuje = "SELECT * FROM Obserwowani WHERE ID_obserwujacego=$sesja AND ID_obserwowanego=$profil_id";
                 $result_obserwuje = $conn->query($sql_obserwuje);
@@ -70,7 +71,32 @@
 
     <section class="Posty container">
         <h3>Posty użytkownika</h3>
+        <?php
+            $sql_posty = "SELECT * FROM Posty WHERE ID_autora=$profil_id ORDER BY Data_utworzenia DESC";
+            $result_posty = $conn->query($sql_posty);
 
+            echo "<table>
+                <tr>
+                <th>id</th>
+                <th>tytuł</th>
+                <th>autor</th>
+                <th>data</th>
+                </tr>";
+            while ($row = $result_posty->fetch_assoc()){
+                $id = $row["ID"];
+                $tytul = $row["Tytul_postu"];
+                $data = $row["Data_utworzenia"];
+                $id_autora = $row["ID_autora"];
+
+                echo "<tr>
+                    <td>$id</td>
+                    <td><a href='Post.php?id=$id'>$tytul</a></td>
+                    <td><a href='Profil.php?id=$id_autora'>$profil_nick</a></td>
+                    <td>$data</td>
+                    </tr>";
+            }
+            echo "</table>";
+        ?>
     </section>
 
     <section class="powrot container">

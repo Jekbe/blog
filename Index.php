@@ -9,13 +9,13 @@
     if ($conn -> connect_error) die("Connection failed: " . $conn->connect_error);
 
     function post($posty, $conn){
-        echo "<table>";
-        echo "<tr>";
-        echo "<th>id</th>";
-        echo "<th>tytuł</th>";
-        echo "<th>autor</th>";
-        echo "<th>data</th>";
-        echo "</tr>";
+        echo "<table>
+            <tr>
+            <th>id</th>
+            <th>tytuł</th>
+            <th>autor</th>
+            <th>data</th>
+            </tr>";
         while ($row = $posty->fetch_assoc()){
             $id = $row["ID"];
             $tytul = $row["Tytul_postu"];
@@ -27,12 +27,12 @@
             $row_autor = $result_autor->fetch_assoc();
             $autor = $row_autor["Nick"];
 
-            echo "<tr>";
-            echo "<td>$id</td>";
-            echo "<td><a href='Post.php?id=$id'>$tytul</a></td>";
-            echo "<td><a href='Profil.php?id=$id_autora'>$autor</a></td>";
-            echo "<td>$data</td>";
-            echo "</tr>";
+            echo "<tr>
+                <td>$id</td>
+                <td><a href='Post.php?id=$id'>$tytul</a></td>
+                <td><a href='Profil.php?id=$id_autora'>$autor</a></td>
+                <td>$data</td>
+                </tr>";
         }
         echo "</table>";
     }
