@@ -1,7 +1,8 @@
 <?php
-    session_start();
-    $conn = new mysqli("localhost", "root", "", "blog");
-    if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
+    global $conn;
+
+    include 'Additional/Session.php';
+    include 'Additional/Database con.php';
 
     $post_id = $_GET['id'];
 
@@ -37,17 +38,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $tytul; ?></title>
-    <link rel="stylesheet" href="Style.css">
+    <link rel="stylesheet" href="Style/Style.css">
 </head>
 <body>
-    <header class="container">
-        <h1>Draw&play</h1>
-        <a href="Logout.php" class="button">Wyloguj się</a>
-    </header>
+    <?php include 'Additional/Header.php' ?>
 
     <section class="post container">
         <h2><?php echo $tytul; ?></h2>
-        <p>Autor: <a href='Profil.php?id=<?php echo $id_autora; ?>'><?php echo $autor; ?></a></p>
+        <p>Autor: <a href='Profile/Profil.php?id=<?php echo $id_autora; ?>'><?php echo $autor; ?></a></p>
         <p>Data utworzenia: <?php echo $data_utworzenia; ?></p>
         </section>
 

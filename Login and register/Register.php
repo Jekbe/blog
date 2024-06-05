@@ -1,28 +1,29 @@
 <?php
-$conn = new mysqli("localhost", "root", "", "blog");
-    if ($conn -> connect_error) die("Connection failed: " . $conn->connect_error);
+    global $conn;
 
-if (isset($_POST["nick"])) {
-    echo "is set";
-    $login = $_POST["nick"];
-    $email = $_POST["email"];
-    $password = $_POST["password"];
-    $is_artist = isset($_POST["is_artist"]) ? 1 : 0;
+    include '../Additional/Database con.php';
 
-    $hashed_password = md5($password);
-    $sql = "INSERT INTO Uzytkownicy (Nick, Adres_email, Haslo, Jest_artysta) VALUES ('$login', '$email', '$hashed_password', '$is_artist')";
-    echo $sql;
-    $result = $conn->query($sql);
+    if (isset($_POST["nick"])) {
+        echo "is set";
+        $login = $_POST["nick"];
+        $email = $_POST["email"];
+        $password = $_POST["password"];
+        $is_artist = isset($_POST["is_artist"]) ? 1 : 0;
 
-    if ($result) echo "<div class='form'>
-        <h3>Zostałeś pomyślnie zarejestrowany.</h3><br/>
-        <p class='link'>Kliknij tutaj, aby się <a href='Login.php'>zalogować</a></p>
-        </div>";
-    else echo "<div class='form'>
-        <h3>Nie wypełniłeś wymaganych pól lub wystąpił błąd.</h3><br/>
-        <p class='link'>Kliknij tutaj, aby ponowić próbę <a href='Register.php'>rejestracji</a>.</p>
-        </div>";
-}
+        $hashed_password = md5($password);
+        $sql = "INSERT INTO Uzytkownicy (Nick, Adres_email, Haslo, Jest_artysta) VALUES ('$login', '$email', '$hashed_password', '$is_artist')";
+        echo $sql;
+        $result = $conn->query($sql);
+
+        if ($result) echo "<div class='form'>
+            <h3>Zostałeś pomyślnie zarejestrowany.</h3><br/>
+            <p class='link'>Kliknij tutaj, aby się <a href='Login.php'>zalogować</a></p>
+            </div>";
+        else echo "<div class='form'>
+            <h3>Nie wypełniłeś wymaganych pól lub wystąpił błąd.</h3><br/>
+            <p class='link'>Kliknij tutaj, aby ponowić próbę <a href='Register.php'>rejestracji</a>.</p>
+            </div>";
+    }
 ?>
 
 <!DOCTYPE html>
@@ -31,7 +32,7 @@ if (isset($_POST["nick"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rejestracja</title>
-    <link rel="stylesheet" href="Style.css">
+    <link rel="stylesheet" href="../Style/Style.css">
 </head>
 <body>
     <div class="container">

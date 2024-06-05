@@ -1,15 +1,8 @@
 <?php
-    session_start();
+    global $conn;
 
-    if (!isset($_SESSION["login"])) {
-        header("Location: Login.php");
-        exit;
-    }
-
-    $conn = new mysqli("localhost", "root", "", "blog");
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
+    include 'Additional/Session.php';
+    include 'Additional/Database con.php';
 
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $tytul = $_POST["title"];
@@ -27,31 +20,15 @@
 
                 foreach ($_FILES["images"]["name"] as $key => $nazwa_pliku) {
                     $sciezka = $lokalizacja . basename($nazwa_pliku);
-                    $uploadOk = 1;
                     $imageFileType = strtolower(pathinfo($sciezka, PATHINFO_EXTENSION));
-
                     $check = getimagesize($_FILES["images"]["tmp_name"][$key]);
-                    if ($check === false) {
-                        echo "Plik nie jest obrazem.";
-                        $uploadOk = 0;
-                    }
 
-                    if (file_exists($sciezka)) {
-                        echo "Przepraszamy, plik już istnieje.";
-                        $uploadOk = 0;
-                    }
-
-                    if ($imageFileType !== "jpg" && $imageFileType !== "jpeg" && $imageFileType !== "png" && $imageFileType !== "gif") {
-                        echo "Przepraszamy, tylko pliki JPG, JPEG, PNG i GIF są dozwolone.";
-                        $uploadOk = 0;
-                    }
-
-                    if ($uploadOk === 1) {
-                        if (move_uploaded_file($_FILES["images"]["tmp_name"][$key], $sciezka)) {
-                            $sqlImage = "INSERT INTO Zdjecia (Sciezka, ID_postu) VALUES ('$sciezka', '$postId')";
-                            $conn->query($sqlImage);
-                        } else echo "Wystąpił błąd podczas przesyłania pliku.";
-                    }
+                    if ($check === false) echo "Plik nie jest obrazem.";
+                    elseif ($imageFileType !== "jpg" && $imageFileType !== "jpeg" && $imageFileType !== "png" && $imageFileType !== "gif") echo "Przepraszamy, tylko pliki JPG, JPEG, PNG i GIF są dozwolone.";
+                    elseif (move_uploaded_file($_FILES["images"]["tmp_name"][$key], $sciezka)) {
+                        $sqlImage = "INSERT INTO Zdjecia (Sciezka, ID_postu) VALUES ('$sciezka', '$postId')";
+                        $conn->query($sqlImage);
+                    } else echo "Wystąpił błąd podczas przesyłania pliku.";
                 }
             }
 
@@ -67,13 +44,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dodaj Post</title>
-    <link rel="stylesheet" href="Style.css">
+    <link rel="stylesheet" href="Style/Style.css">
 </head>
 <body>
-    <header class="container">
-        <h1>Draw&play</h1>
-        <a href="Logout.php" class="button">Wyloguj się</a>
-    </header>
+    <?php include 'Additional/Header.php' ?>
 
     <section class="dodaj_post container">
         <h2>Dodaj Post</h2>

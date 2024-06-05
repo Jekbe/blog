@@ -1,14 +1,11 @@
 <?php
-    session_start();
-    if (!isset($_SESSION["login"])) {
-        header("Location: Login.php");
-        exit;
-    }
+    global $conn;
 
-    $conn = new mysqli("localhost", "root", "", "blog");
-    if ($conn -> connect_error) die("Connection failed: " . $conn->connect_error);
+    include 'Additional/Session.php';
+    include 'Additional/Database con.php';
 
-    function post($posty, $conn){
+    function post($posty, $conn): void
+    {
         echo "<table>
             <tr>
             <th>id</th>
@@ -44,19 +41,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Strona główna</title>
-    <link rel="stylesheet" href="Style.css">
+    <link rel="stylesheet" href="Style/Style.css">
 </head>
 <body>
-    <header class="container">
-        <h1>Draw&play</h1>
-        <?php
-            $nick = $_SESSION["nick"];
-            $awatar = $_SESSION["awatar"];
-            $user_id = $_SESSION["id"];
-            echo "<a href='Profil.php?id=$user_id'>$nick <img src='$awatar' width='20px'></a> <br>";
-        ?>
-        <a href="Logout.php" class="button">Wyloguj się</a>
-    </header>
+    <?php include 'Additional/Header.php' ?>
 
     <section class="dodaj_post container">
         <?php
