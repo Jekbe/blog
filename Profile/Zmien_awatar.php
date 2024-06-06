@@ -8,7 +8,7 @@
 
     if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["awatar"])){
         if (!empty($_FILES["awatar"])) {
-            $sciezka = 'Awatary/'. basename($_FILES["awatar"]["name"]);
+            $sciezka = '/blog/Profile/Awatary/'. basename($_FILES["awatar"]["name"]);
             $imageFileType = strtolower(pathinfo($sciezka, PATHINFO_EXTENSION));
             $check = getimagesize($_FILES["awatar"]["tmp_name"]);
 

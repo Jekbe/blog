@@ -24,6 +24,8 @@
 
         $sql_obrazy = "SELECT Sciezka FROM Zdjecia WHERE ID_postu=$post_id";
         $result_obrazy = $conn->query($sql_obrazy);
+
+
     } else {
         echo "Post o podanym ID nie istnieje.";
         exit;
@@ -84,6 +86,10 @@
                     </section>";
             }
         ?>
+
+    <section class="polub container">
+        <h3>Polubienia</h3>
+    </section>
 
     <section class="komentarze container">
         <h3>Komentarze</h3>

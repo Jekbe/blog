@@ -4,7 +4,7 @@
     include 'Additional/Session.php';
     include 'Additional/Database con.php';
 
-    function post($posty, $conn): void
+    $posty_fun = function($posty, $conn): void
     {
         echo "<table>
             <tr>
@@ -27,7 +27,7 @@
             echo "<tr>
                 <td>$id</td>
                 <td><a href='Post.php?id=$id'>$tytul</a></td>
-                <td><a href='Profil.php?id=$id_autora'>$autor</a></td>
+                <td><a href='Profile/Profil.php?id=$id_autora'>$autor</a></td>
                 <td>$data</td>
                 </tr>";
         }
@@ -68,7 +68,7 @@
                 $sql_posty = $dorosly ? "SELECT * FROM Posty WHERE ID_autora IN ($obserwowani_str) LIMIT 10 ORDER BY Data_utworzenia DESC" : "SELECT * FROM Posty WHERE ID_autora IN ($obserwowani_str) AND Oznaczenie_18plus = false LIMIT 10 ORDER BY Data_utworzenia DESC";
                 $result_posty = $conn->query($sql_posty);
 
-                if ($result_posty->num_rows > 0) post($result_posty, $conn);
+                if ($result_posty->num_rows > 0) $posty_fun($result_posty, $conn);
                 else echo "Brak postów do wyświetlenia";
             } else echo "Nie obserwujesz nikogo";
         ?>
@@ -80,7 +80,7 @@
             $sql_all_posty = $dorosly ? "SELECT * FROM Posty ORDER BY Data_utworzenia DESC" : "SELECT * FROM Posty WHERE Oznaczenie_18plus = false ORDER BY Data_utworzenia DESC";
             $result_all_posty = $conn->query($sql_all_posty);
 
-            if ($result_all_posty->num_rows > 0) post($result_all_posty, $conn);
+            if ($result_all_posty->num_rows > 0) $posty_fun($result_all_posty, $conn);
             else echo "Brak postów do wyświetlenia";
 
             $conn->close();

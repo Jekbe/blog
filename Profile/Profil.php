@@ -10,6 +10,46 @@
     $result_profil = $conn->query($sql_profil);
     $row_profil = $result_profil->fetch_assoc();
     $profil_nick = $row_profil['Nick'];
+
+    $sql_obserwujacy = "SELECT COUNT(ID_obserwujacego) AS liczba_obserwujacych FROM Obserwowani WHERE ID_obserwowanego = $profil_id";
+    $result_obserwyjacy = $conn->query($sql_obserwujacy);
+
+    $sql_posty = "SELECT * FROM Posty WHERE ID_autora=$profil_id ORDER BY Data_utworzenia DESC";
+    $result_posty = $conn->query($sql_posty);
+
+    $sql_obserwuje = "SELECT * FROM Obserwowani WHERE ID_obserwujacego=$sesja AND ID_obserwowanego=$profil_id";
+    $result_obserwuje = $conn->query($sql_obserwuje);
+
+    $posty_fun = function($posty, $conn) :void
+    {
+        echo "<table>
+                <tr>
+                <th>id</th>
+                <th>tytuł</th>
+                <th>autor</th>
+                <th>data</th>
+                </tr>";
+        while ($row = $posty->fetch_assoc()){
+            $id = $row["ID"];
+            $tytul = $row["Tytul_postu"];
+            $data = $row["Data_utworzenia"];
+            $id_autora = $row["ID_autora"];
+
+            $sql_nick = "SELECT Nick FROM Uzytkownicy WHERE ID=$id_autora";
+            $result_nick = $conn->query($sql_nick);
+            $row_nick = $result_nick->fetch_assoc();
+            $nick = $row_nick["Nick"];
+
+
+            echo "<tr>
+                    <td>$id</td>
+                    <td><a href='../Post.php?id=$id'>$tytul</a></td>
+                    <td><a href='Profil.php?id=$id_autora'>$nick</a></td>
+                    <td>$data</td>
+                    </tr>";
+        }
+        echo "</table>";
+    }
 ?>
 
 <!doctype html>
@@ -48,43 +88,16 @@
                 else echo "<a href='Zmien_wiek.php?value=1'>Włącz treści dla dorosłych</a>";
                 echo "<br> <a href='Doladuj_portfel.php?id=$profil_id'>Doładuj portfel</a>";
             } else{
-                $sql_obserwuje = "SELECT * FROM Obserwowani WHERE ID_obserwujacego=$sesja AND ID_obserwowanego=$profil_id";
-                $result_obserwuje = $conn->query($sql_obserwuje);
                 if ($result_obserwuje->num_rows == 0) echo "<a href='Obserwuj.php?id=$profil_id'>Obserwuj</a>";
                 else echo "<a href='Obserwuj.php?id=$profil_id'>przestań obserwować</a>";
             }
-
-            echo "<br>Zaloguj się ponownie aby zastosować!"
         ?>
     </section>
 
     <section class="Posty container">
         <h3>Posty użytkownika</h3>
         <?php
-            $sql_posty = "SELECT * FROM Posty WHERE ID_autora=$profil_id ORDER BY Data_utworzenia DESC";
-            $result_posty = $conn->query($sql_posty);
-
-            echo "<table>
-                <tr>
-                <th>id</th>
-                <th>tytuł</th>
-                <th>autor</th>
-                <th>data</th>
-                </tr>";
-            while ($row = $result_posty->fetch_assoc()){
-                $id = $row["ID"];
-                $tytul = $row["Tytul_postu"];
-                $data = $row["Data_utworzenia"];
-                $id_autora = $row["ID_autora"];
-
-                echo "<tr>
-                    <td>$id</td>
-                    <td><a href='Post.php?id=$id'>$tytul</a></td>
-                    <td><a href='Profil.php?id=$id_autora'>$profil_nick</a></td>
-                    <td>$data</td>
-                    </tr>";
-            }
-            echo "</table>";
+            $posty_fun($result_posty, $conn)
         ?>
     </section>
 
