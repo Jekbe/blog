@@ -24,6 +24,8 @@
             <p class='link'>Kliknij tutaj, aby ponowić próbę <a href='Register.php'>rejestracji</a>.</p>
             </div>";
     }
+
+    $conn->close();
 ?>
 
 <!DOCTYPE html>

@@ -101,3 +101,5 @@
     </section>
 </body>
 </html>
+
+<?php $conn->close();

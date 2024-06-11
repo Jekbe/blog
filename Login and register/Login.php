@@ -28,6 +28,8 @@
             <p class='link'>Ponów próbę <a href='Login.php'>logowania</a>.</p>
             </div>";
     }
+
+    $conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +38,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logowanie</title>
-    <link rel="stylesheet" href="../Style/Style.css"> <!-- Załącz plik CSS -->
+    <link rel="stylesheet" href="../Style/Style.css">
 </head>
 <body>
 <div class="container">

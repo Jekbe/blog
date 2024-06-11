@@ -27,7 +27,7 @@
 ?>
 
 <!doctype html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -49,3 +49,5 @@
     </section>
 </body>
 </html>
+
+<?php $conn->close();

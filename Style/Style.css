@@ -86,3 +86,8 @@ img {
     width: 500px;
     height: auto;
 }
+
+#errorMessage{
+    color: red;
+    display: none;
+}

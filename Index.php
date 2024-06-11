@@ -82,9 +82,9 @@
 
             if ($result_all_posty->num_rows > 0) $posty_fun($result_all_posty, $conn);
             else echo "Brak postów do wyświetlenia";
-
-            $conn->close();
         ?>
     </section>
 </body>
 </html>
+
+<?php $conn->close();

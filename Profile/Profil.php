@@ -4,23 +4,26 @@
     include '../Additional/Session.php';
     include '../Additional/Database con.php';
 
-    $sesja = $_SESSION["id"];
+    $sesja_id = $_SESSION["id"];
+    $sesja_wiek = $_SESSION["pelnoletni"];
     $profil_id = $_GET["id"];
     $sql_profil = "SELECT * FROM Uzytkownicy WHERE ID=$profil_id";
     $result_profil = $conn->query($sql_profil);
     $row_profil = $result_profil->fetch_assoc();
     $profil_nick = $row_profil['Nick'];
+    $profil_status = $row_profil['Jest_artysta'];
+    $dodatkowe = $row_profil['Dodatkowe'];
 
     $sql_obserwujacy = "SELECT COUNT(ID_obserwujacego) AS liczba_obserwujacych FROM Obserwowani WHERE ID_obserwowanego = $profil_id";
-    $result_obserwyjacy = $conn->query($sql_obserwujacy);
+    $result_obserwujacy = $conn->query($sql_obserwujacy);
 
-    $sql_posty = "SELECT * FROM Posty WHERE ID_autora=$profil_id ORDER BY Data_utworzenia DESC";
+    $sql_posty = $sesja_wiek? "SELECT * FROM Posty WHERE ID_autora=$profil_id ORDER BY Data_utworzenia DESC": "SELECT * FROM Posty WHERE ID_autora=$profil_id AND Oznaczenie_18plus = FALSE ORDER BY Data_utworzenia DESC";
     $result_posty = $conn->query($sql_posty);
 
-    $sql_obserwuje = "SELECT * FROM Obserwowani WHERE ID_obserwujacego=$sesja AND ID_obserwowanego=$profil_id";
+    $sql_obserwuje = "SELECT * FROM Obserwowani WHERE ID_obserwujacego=$sesja_id AND ID_obserwowanego=$profil_id";
     $result_obserwuje = $conn->query($sql_obserwuje);
 
-    $posty_fun = function($posty, $conn) :void
+    $posty_fun = function($posty, $nick) :void
     {
         echo "<table>
                 <tr>
@@ -35,12 +38,6 @@
             $data = $row["Data_utworzenia"];
             $id_autora = $row["ID_autora"];
 
-            $sql_nick = "SELECT Nick FROM Uzytkownicy WHERE ID=$id_autora";
-            $result_nick = $conn->query($sql_nick);
-            $row_nick = $result_nick->fetch_assoc();
-            $nick = $row_nick["Nick"];
-
-
             echo "<tr>
                     <td>$id</td>
                     <td><a href='../Post.php?id=$id'>$tytul</a></td>
@@ -53,7 +50,7 @@
 ?>
 
 <!doctype html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -66,7 +63,7 @@
 
     <section class="info container">
         <?php
-            if ($sesja === $profil_id) echo "<h2>Mój profil</h2>";
+            if ($sesja_id === $profil_id) echo "<h2>Mój profil</h2>";
         ?>
         <h3>Informacje</h3>
         <img src="<?php echo $row_profil['Awatar']?>">
@@ -79,30 +76,43 @@
         ?>
     </section>
 
+    <section class="dodatkowe container">
+        <h3>Dodatkowe informacje</h3>
+        <?php
+            echo "$dodatkowe <br>";
+            if ($sesja_id === $profil_id) echo "<a href='Edytuj_dodatkowe.php?id=$profil_id'>edytuj dodatkowe</a>";
+        ?>
+    </section>
+
     <section class="opcje container">
         <h3>Opcje</h3>
         <?php
-            if ($sesja === $profil_id){
+            if ($sesja_id === $profil_id){
                 echo "<a href='Zmien_awatar.php'>Zmień awatar</a> <br>";
                 if ($row_profil["Pelnoletni"]) echo "<a href='Zmien_wiek.php?value=0'>Wyłącz treści dla dorosłych</a>";
                 else echo "<a href='Zmien_wiek.php?value=1'>Włącz treści dla dorosłych</a>";
                 echo "<br> <a href='Doladuj_portfel.php?id=$profil_id'>Doładuj portfel</a>";
-            } else{
-                if ($result_obserwuje->num_rows == 0) echo "<a href='Obserwuj.php?id=$profil_id'>Obserwuj</a>";
-                else echo "<a href='Obserwuj.php?id=$profil_id'>przestań obserwować</a>";
+            } elseif ($profil_status) {
+                if ($result_obserwuje->num_rows == 0) echo "<a href='Obserwuj.php?id=$profil_id,value=1'>Obserwuj</a> <br>";
+                else echo "<a href='Obserwuj.php?id=$profil_id,value=0'>przestań obserwować</a> <br>";
+                echo "<a href='Zamow.php?id=$profil_id'>Złóż zamówienie</a>";
             }
         ?>
     </section>
 
-    <section class="Posty container">
-        <h3>Posty użytkownika</h3>
-        <?php
-            $posty_fun($result_posty, $conn)
-        ?>
-    </section>
+    <?php
+        if ($profil_status){
+            echo "<section class='Posty container'>
+                <h3>Posty użytkownika</h3>";
+            $posty_fun($result_posty, $profil_nick);
+            echo "</section>";
+        }
+    ?>
 
     <section class="powrot container">
         <a href="../Index.php">Powrót</a>
     </section>
 </body>
 </html>
+
+<?php $conn->close();
