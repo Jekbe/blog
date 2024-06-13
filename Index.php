@@ -4,8 +4,17 @@
     include 'Additional/Session.php';
     include 'Additional/Database con.php';
 
-    $posty_fun = function($posty, $conn): void
-    {
+    $artysta = $_SESSION["artist"];
+    $user = $_SESSION["id"];
+    $dorosly = $_SESSION["pelnoletni"];
+
+    $sql_obserwowani = "SELECT ID_obserwowanego FROM Obserwowani WHERE ID_obserwujacego = $user";
+    $result_obserwowani = $conn->query($sql_obserwowani);
+
+    $sql_all_posty = $dorosly ? "SELECT * FROM Posty ORDER BY Data_utworzenia DESC" : "SELECT * FROM Posty WHERE Oznaczenie_18plus = false ORDER BY Data_utworzenia DESC";
+    $result_all_posty = $conn->query($sql_all_posty);
+
+    $posty_fun = function($posty, $conn){
         echo "<table>
             <tr>
             <th>id</th>
@@ -32,6 +41,21 @@
                 </tr>";
         }
         echo "</table>";
+    };
+
+    $znajdz_obserwowanych = function ($result_obserwowani, $dorosly, $conn, $posty_fun){
+        if ($result_obserwowani->num_rows > 0){
+            $obserwowani = [];
+            while ($row = $result_obserwowani->fetch_assoc()) $obserwowani[] = $row['ID_obserwowanego'];
+
+            $obserwowani_str = implode(",", $obserwowani);
+            $sql_posty = $dorosly ? "SELECT * FROM Posty WHERE ID_autora IN ($obserwowani_str) ORDER BY Data_utworzenia DESC LIMIT 10" : "SELECT * FROM Posty WHERE ID_autora IN ($obserwowani_str) AND Oznaczenie_18plus = false ORDER BY Data_utworzenia DESC LIMIT 10";
+
+            $result_posty = $conn->query($sql_posty);
+
+            if ($result_posty->num_rows > 0) $posty_fun($result_posty, $conn);
+            else echo "Brak postów do wyświetlenia";
+        } else echo "Nie obserwujesz nikogo";
     }
 ?>
 
@@ -47,41 +71,19 @@
     <?php include 'Additional/Header.php' ?>
 
     <section class="dodaj_post container">
-        <?php
-            $artysta = $_SESSION["artist"];
-            if ($artysta) echo "<a href='Dodaj_post.php'>Dodaj post</a>";
-        ?>
+        <?php if ($artysta) echo "<a href='Dodaj_post.php'>Dodaj post</a>" ?>
     </section>
 
     <section class="latest-posts container">
         <h2>Najnowsze od obserwowanych</h2>
-        <?php
-            $user = $_SESSION["id"];
-            $dorosly = $_SESSION["pelnoletni"];
-            $sql_obserwowani = "SELECT ID_obserwowanego FROM Obserwowani WHERE ID_obserwujacego = $user";
-            $result_obserwowani = $conn->query($sql_obserwowani);
-            if ($result_obserwowani->num_rows > 0){
-                $obserwowani = [];
-                while ($row = $result_obserwowani->fetch_assoc()) $obserwowani[] = $row['ID_obserwowanego'];
-
-                $obserwowani_str = implode(",", $obserwowani);
-                $sql_posty = $dorosly ? "SELECT * FROM Posty WHERE ID_autora IN ($obserwowani_str) LIMIT 10 ORDER BY Data_utworzenia DESC" : "SELECT * FROM Posty WHERE ID_autora IN ($obserwowani_str) AND Oznaczenie_18plus = false LIMIT 10 ORDER BY Data_utworzenia DESC";
-                $result_posty = $conn->query($sql_posty);
-
-                if ($result_posty->num_rows > 0) $posty_fun($result_posty, $conn);
-                else echo "Brak postów do wyświetlenia";
-            } else echo "Nie obserwujesz nikogo";
-        ?>
+        <?php $znajdz_obserwowanych($result_obserwowani, $dorosly, $conn, $posty_fun) ?>
     </section>
 
     <section class="all-posts container">
         <h2>Wszystkie posty</h2>
         <?php
-            $sql_all_posty = $dorosly ? "SELECT * FROM Posty ORDER BY Data_utworzenia DESC" : "SELECT * FROM Posty WHERE Oznaczenie_18plus = false ORDER BY Data_utworzenia DESC";
-            $result_all_posty = $conn->query($sql_all_posty);
-
             if ($result_all_posty->num_rows > 0) $posty_fun($result_all_posty, $conn);
-            else echo "Brak postów do wyświetlenia";
+            else echo "Brak postów do wyświetlenia"
         ?>
     </section>
 </body>

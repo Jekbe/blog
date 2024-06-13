@@ -1,20 +1,22 @@
-function toggleAdultContent(value) {
+function zmien_wiek(value) {
     $.ajax({
-        url: 'Zmien_wiek.php',
+        url: '../Profile/Zmien_wiek.php',
         type: 'GET',
-        data: { value: value },
-        success: function(response) {
-            // Aktualizuj interfejs użytkownika w zależności od nowego stanu
+        data: {
+            value: value
+        },
+        success(response) {
+            const $selector = $('#zmienWiek');
             if (value === 1) {
-                $('#toggleAdultContent').text('Wyłącz treści dla dorosłych');
-                $('#toggleAdultContent').attr('onclick', 'toggleAdultContent(0)');
+                $selector.text('Wyłącz treści dla dorosłych');
+                $selector.attr('onclick', 'zmien_wiek(0)')
             } else {
-                $('#toggleAdultContent').text('Włącz treści dla dorosłych');
-                $('#toggleAdultContent').attr('onclick', 'toggleAdultContent(1)');
+                $selector.text('Włącz treści dla dorosłych');
+                $selector.attr('onclick', 'zmien_wiek(1)')
             }
         },
-        error: function() {
-            alert('Wystąpił błąd. Spróbuj ponownie.');
+        error() {
+            alert('Wystąpił błąd. Spróbuj ponownie.')
         }
-    });
+    })
 }

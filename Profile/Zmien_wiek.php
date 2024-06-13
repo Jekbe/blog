@@ -10,8 +10,7 @@
     $sql = "UPDATE Uzytkownicy SET Pelnoletni=$value WHERE ID=$id";
     $conn->query($sql);
     $_SESSION["pelnoletni"] = $value;
+    echo json_encode(array('success' => true));
 
     $conn->close();
-
-    header("Location: Profil.php?id=$id");
     exit;

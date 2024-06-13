@@ -23,8 +23,7 @@
     $sql_obserwuje = "SELECT * FROM Obserwowani WHERE ID_obserwujacego=$sesja_id AND ID_obserwowanego=$profil_id";
     $result_obserwuje = $conn->query($sql_obserwuje);
 
-    $posty_fun = function($posty, $nick) :void
-    {
+    $posty_fun = function($posty, $nick){
         echo "<table>
                 <tr>
                 <th>id</th>
@@ -57,6 +56,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Profil</title>
     <link rel="stylesheet" href="../Style/Style.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="../Skrypty/Zmien_wiek.js"></script>
+    <script src="../Skrypty/Obserwuj.js"></script>
 </head>
 <body>
     <?php include '../Additional/Header.php' ?>
@@ -89,12 +91,12 @@
         <?php
             if ($sesja_id === $profil_id){
                 echo "<a href='Zmien_awatar.php'>Zmień awatar</a> <br>";
-                if ($row_profil["Pelnoletni"]) echo "<a href='Zmien_wiek.php?value=0'>Wyłącz treści dla dorosłych</a>";
-                else echo "<a href='Zmien_wiek.php?value=1'>Włącz treści dla dorosłych</a>";
+                if ($row_profil["Pelnoletni"]) echo "<a id='zmienWiek' onclick='zmien_wiek(0)'>Wyłącz treści dla dorosłych</a>";
+                else echo "<a id='zmienWiek' onclick='zmien_wiek(1)'>Włącz treści dla dorosłych</a>";
                 echo "<br> <a href='Doladuj_portfel.php?id=$profil_id'>Doładuj portfel</a>";
             } elseif ($profil_status) {
-                if ($result_obserwuje->num_rows == 0) echo "<a href='Obserwuj.php?id=$profil_id,value=1'>Obserwuj</a> <br>";
-                else echo "<a href='Obserwuj.php?id=$profil_id,value=0'>przestań obserwować</a> <br>";
+                if ($result_obserwuje->num_rows == 0) echo "<a id='obserwuj' onclick='obserwuj($profil_id, 1)'>Obserwuj</a><br>";
+                else echo "<a id='obserwuj' onclick='obserwuj($profil_id, 0)'>Przestań obserwować</a><br>";
                 echo "<a href='Zamow.php?id=$profil_id'>Złóż zamówienie</a>";
             }
         ?>
