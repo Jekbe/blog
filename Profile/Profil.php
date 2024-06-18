@@ -88,28 +88,32 @@
 
     <section class="opcje container">
         <h3>Opcje</h3>
-        <?php
-            if ($sesja_id === $profil_id){
-                echo "<a href='Zmien_awatar.php'>Zmień awatar</a> <br>";
-                if ($row_profil["Pelnoletni"]) echo "<a id='zmienWiek' onclick='zmien_wiek(0)'>Wyłącz treści dla dorosłych</a>";
-                else echo "<a id='zmienWiek' onclick='zmien_wiek(1)'>Włącz treści dla dorosłych</a>";
-                echo "<br> <a href='Doladuj_portfel.php?id=$profil_id'>Doładuj portfel</a>";
-            } elseif ($profil_status) {
-                if ($result_obserwuje->num_rows == 0) echo "<a id='obserwuj' onclick='obserwuj($profil_id, 1)'>Obserwuj</a><br>";
-                else echo "<a id='obserwuj' onclick='obserwuj($profil_id, 0)'>Przestań obserwować</a><br>";
-                echo "<a href='Zamow.php?id=$profil_id'>Złóż zamówienie</a>";
-            }
-        ?>
+        <?php if ($sesja_id === $profil_id): ?>
+            <a href='Zmien_awatar.php'>Zmień awatar</a> <br>
+            <?php if ($row_profil["Pelnoletni"]): ?>
+                <a id='zmienWiek' onclick='zmien_wiek(0)'>Wyłącz treści dla dorosłych</a> <br>
+            <?php else: ?>
+                <a id='zmienWiek' onclick='zmien_wiek(1)'>Włącz treści dla dorosłych</a> <br>
+            <?php endif ?>
+            <a href='Doladuj_portfel.php?id=<?php echo $profil_id; ?>'>Doładuj portfel</a> <br>
+            <a href='Wiadomosci.php'>Wiadomości</a>
+        <?php elseif ($profil_status): ?>
+            <?php if ($result_obserwuje->num_rows == 0): ?>
+                <a id='obserwuj' onclick='obserwuj(<?php echo $profil_id; ?>, 1)'>Obserwuj</a><br>
+            <?php else: ?>
+                <a id='obserwuj' onclick='obserwuj(<?php echo $profil_id; ?>, 0)'>Przestań obserwować</a><br>
+            <?php endif ?>
+            <a href='Zamow.php?id=<?php echo $profil_id; ?>'>Złóż zamówienie</a>
+        <?php endif ?>
+
     </section>
 
-    <?php
-        if ($profil_status){
-            echo "<section class='Posty container'>
-                <h3>Posty użytkownika</h3>";
-            $posty_fun($result_posty, $profil_nick);
-            echo "</section>";
-        }
-    ?>
+    <?php if ($profil_status): ?>
+        <section class='Posty container'>
+            <h3>Posty użytkownika</h3>
+            <?php $posty_fun($result_posty, $profil_nick); ?>
+        </section>
+    <?php endif ?>
 
     <section class="powrot container">
         <a href="../Index.php">Powrót</a>
