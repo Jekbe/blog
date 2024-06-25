@@ -8,54 +8,25 @@
     $user = $_SESSION["id"];
     $dorosly = $_SESSION["pelnoletni"];
 
-    $sql_obserwowani = "SELECT ID_obserwowanego FROM Obserwowani WHERE ID_obserwujacego = $user";
+    $sql_obserwowani = $dorosly ? "SELECT P.ID, P.Tytul_postu, P.Data_utworzenia, P.ID_autora, U.Nick FROM Posty P JOIN Uzytkownicy U ON P.ID_autora = U.ID WHERE P.ID_autora IN (SELECT ID_obserwowanego FROM Obserwowani WHERE ID_obserwujacego = $user) ORDER BY P.Data_utworzenia DESC LIMIT 10" : "SELECT P.ID, P.Tytul_postu, P.Data_utworzenia, P.ID_autora, U.Nick FROM Posty P JOIN Uzytkownicy U ON P.ID_autora = U.ID WHERE P.ID_autora IN (SELECT ID_obserwowanego FROM Obserwowani WHERE ID_obserwujacego = $user) AND P.Oznaczenie_18plus = false ORDER BY P.Data_utworzenia DESCLIMIT 10";
     $result_obserwowani = $conn->query($sql_obserwowani);
 
-    $sql_all_posty = $dorosly ? "SELECT * FROM Posty ORDER BY Data_utworzenia DESC" : "SELECT * FROM Posty WHERE Oznaczenie_18plus = false ORDER BY Data_utworzenia DESC";
+    $sql_all_posty = $dorosly ? "SELECT P.ID, P.Tytul_postu, P.Data_utworzenia, P.ID_autora, U.Nick FROM Posty P JOIN Uzytkownicy U ON P.ID_autora = U.ID ORDER BY P.Data_utworzenia DESC" : "SELECT P.ID, P.Tytul_postu, P.Data_utworzenia, P.ID_autora, U.Nick FROM Posty P JOIN Uzytkownicy U ON P.ID_autora = U.ID WHERE P.Oznaczenie_18plus = false ORDER BY P.Data_utworzenia DESC";
     $result_all_posty = $conn->query($sql_all_posty);
 
-    $posty_fun = function($posty, $conn){
+    $posty_fun = function($posty) {
         echo "<table>
-            <tr>
-            <th>id</th>
-            <th>tytuł</th>
-            <th>autor</th>
-            <th>data</th>
-            </tr>";
-        while ($row = $posty->fetch_assoc()){
+                <tr><th>id</th><th>tytuł</th><th>autor</th><th>data</th></tr>";
+        while ($row = $posty->fetch_assoc()) {
             $id = $row["ID"];
             $tytul = $row["Tytul_postu"];
             $data = $row["Data_utworzenia"];
+            $autor = $row["Nick"];
             $id_autora = $row["ID_autora"];
 
-            $sql_autor = "SELECT Nick FROM Uzytkownicy WHERE ID = $id_autora";
-            $result_autor = $conn->query($sql_autor);
-            $row_autor = $result_autor->fetch_assoc();
-            $autor = $row_autor["Nick"];
-
-            echo "<tr>
-                <td>$id</td>
-                <td><a href='Post.php?id=$id'>$tytul</a></td>
-                <td><a href='Profile/Profil.php?id=$id_autora'>$autor</a></td>
-                <td>$data</td>
-                </tr>";
+            echo "<tr><td>$id</td><td><a href='Post.php?id=$id'>$tytul</a></td><td><a href='Profile/Profil.php?id=$id_autora'>$autor</a></td><td>$data</td></tr>";
         }
         echo "</table>";
-    };
-
-    $znajdz_obserwowanych = function ($result_obserwowani, $dorosly, $conn, $posty_fun){
-        if ($result_obserwowani->num_rows > 0){
-            $obserwowani = [];
-            while ($row = $result_obserwowani->fetch_assoc()) $obserwowani[] = $row['ID_obserwowanego'];
-
-            $obserwowani_str = implode(",", $obserwowani);
-            $sql_posty = $dorosly ? "SELECT * FROM Posty WHERE ID_autora IN ($obserwowani_str) ORDER BY Data_utworzenia DESC LIMIT 10" : "SELECT * FROM Posty WHERE ID_autora IN ($obserwowani_str) AND Oznaczenie_18plus = false ORDER BY Data_utworzenia DESC LIMIT 10";
-
-            $result_posty = $conn->query($sql_posty);
-
-            if ($result_posty->num_rows > 0) $posty_fun($result_posty, $conn);
-            else echo "Brak postów do wyświetlenia";
-        } else echo "Nie obserwujesz nikogo";
     }
 ?>
 
@@ -76,13 +47,16 @@
 
     <section class="latest-posts container">
         <h2>Najnowsze od obserwowanych</h2>
-        <?php $znajdz_obserwowanych($result_obserwowani, $dorosly, $conn, $posty_fun) ?>
+        <?php
+            if ($result_obserwowani->num_rows > 0) $posty_fun($result_obserwowani);
+            else echo "Brak postów do wyświetlenia";
+        ?>
     </section>
 
     <section class="all-posts container">
         <h2>Wszystkie posty</h2>
         <?php
-            if ($result_all_posty->num_rows > 0) $posty_fun($result_all_posty, $conn);
+            if ($result_all_posty->num_rows > 0) $posty_fun($result_all_posty);
             else echo "Brak postów do wyświetlenia"
         ?>
     </section>

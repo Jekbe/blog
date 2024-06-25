@@ -35,9 +35,25 @@
         $sql_czy_lubie = "SELECT ID_polubienia FROM Polubienia WHERE ID_postu = $post_id AND ID_uzytkownika = $id";
         $result_czy_lubie = $conn->query($sql_czy_lubie);
         $row_czy_lubie = $result_czy_lubie->fetch_assoc();
+
+        $sql_komentarze = "SELECT K.Tresc_komentarza, K.Data_komentarza, U.Nick FROM Komentarze K JOIN Uzytkownicy U ON K.ID_uzytkownika = U.ID WHERE K.ID_postu = $post_id ORDER BY K.Data_komentarza";
+        $result_komentarze = $conn->query($sql_komentarze);
     } else {
         echo "Post o podanym ID nie istnieje.";
         exit;
+    }
+
+    $kom_func = function ($komentarze){
+        if ($komentarze->num_rows > 0) {
+            while ($row_komentarz = $komentarze->fetch_assoc()) {
+                echo "<div class='komentarz'>
+                    <p><strong>{$row_komentarz['Nick']}</strong> ({$row_komentarz['Data_komentarza']}):</p>
+                    <p>{$row_komentarz['Tresc_komentarza']}</p>
+                    </div>";
+            }
+        } else {
+            echo "<p>Brak komentarzy.</p>";
+        }
     }
 ?>
 
@@ -117,7 +133,7 @@
             </div>
         </form>
 
-
+        <?php $kom_func($result_komentarze) ?>
     </section>
 
     <section class="powrot container">
