@@ -36,7 +36,7 @@
         $result_czy_lubie = $conn->query($sql_czy_lubie);
         $row_czy_lubie = $result_czy_lubie->fetch_assoc();
 
-        $sql_komentarze = "SELECT K.Tresc_komentarza, K.Data_komentarza, U.Nick FROM Komentarze K JOIN Uzytkownicy U ON K.ID_uzytkownika = U.ID WHERE K.ID_postu = $post_id ORDER BY K.Data_komentarza";
+        $sql_komentarze = "SELECT K.Tresc_komentarza, K.Data_dodania, U.Nick FROM Komentarze K JOIN Uzytkownicy U ON K.ID_autora = U.ID WHERE K.ID_postu = $post_id ORDER BY K.Data_dodania";
         $result_komentarze = $conn->query($sql_komentarze);
     } else {
         echo "Post o podanym ID nie istnieje.";

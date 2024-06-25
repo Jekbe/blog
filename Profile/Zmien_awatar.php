@@ -4,7 +4,7 @@
     include '../Additional/Session.php';
     include '../Additional/Database con.php';
 
-    $id = $_GET["id"];
+    $id = $_SESSION["id"];
 
     if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["awatar"])){
         if (!empty($_FILES["awatar"])) {

@@ -25,11 +25,11 @@
             $opis = $row["Opis"];
 
             $status = match ($row['Status']) {
-                0 => "Oczekuje",
-                -1 => "Odrzucone",
-                1 => "Zaakceptowane",
-                2 => "Opłacone",
-                3 => "Zrealizowane"
+                '0' => "Oczekuje",
+                '-1' => "Odrzucone",
+                '1' => "Zaakceptowane",
+                '2' => "Opłacone",
+                '3' => "Zrealizowane"
             };
 
             echo "<tr>

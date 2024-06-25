@@ -59,7 +59,7 @@
     </section>
 
     <section class="powrot container">
-        <a href="Profil.php?id=<?php echo $od_id?>">Powrót</a>
+        <a href="Profil.php?id=<?php echo $do_id?>">Powrót</a>
     </section>
 </body>
 </html>
