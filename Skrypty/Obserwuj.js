@@ -17,7 +17,7 @@ function obserwuj(id, value){
             }
         },
         error() {
-            alert('Wystąpił błąd. Spróbuj ponownie.');
+            alert('Wystąpił błąd. Spróbuj ponownie.')
         }
     })
 }

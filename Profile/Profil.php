@@ -105,7 +105,6 @@
             <?php endif ?>
             <a href='Zamow.php?id=<?php echo $profil_id; ?>'>Złóż zamówienie</a>
         <?php endif ?>
-
     </section>
 
     <?php if ($profil_status): ?>

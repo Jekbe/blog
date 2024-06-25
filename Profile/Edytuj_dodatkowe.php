@@ -4,7 +4,7 @@
     include '../Additional/Session.php';
     include '../Additional/Database con.php';
 
-    $profil_id = $_GET["id"];
+    $profil_id = $_SESSION["id"];
     $sql_get = "SELECT Dodatkowe FROM uzytkownicy WHERE id = $profil_id";
     $result = $conn->query($sql_get);
     $row = $result->fetch_assoc();
@@ -33,7 +33,7 @@
     <?php include '../Additional/Header.php' ?>
 
     <section class="formulaz container">
-        <form action='Edytuj_dodatkowe.php?id=<?php echo $profil_id?>' method='POST'>
+        <form action='Edytuj_dodatkowe.php' method='POST'>
             <div class='form-group'>
                 <label for='info'>Edytuj dodatkowe informacje:</label>
                 <textarea id='info' name='info' rows='4' required><?php echo $dodatkowe ?></textarea>
