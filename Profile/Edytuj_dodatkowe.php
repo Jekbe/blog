@@ -5,7 +5,7 @@
     include '../Additional/Database con.php';
 
     $profil_id = $_SESSION["id"];
-    $sql_get = "SELECT Dodatkowe FROM uzytkownicy WHERE id = $profil_id";
+    $sql_get = "SELECT Dodatkowe FROM Uzytkownicy WHERE id = $profil_id";
     $result = $conn->query($sql_get);
     $row = $result->fetch_assoc();
     $dodatkowe = $row['Dodatkowe'];

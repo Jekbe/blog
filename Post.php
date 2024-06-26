@@ -27,12 +27,12 @@
         $sql_obrazy = "SELECT Sciezka FROM Zdjecia WHERE ID_postu=$post_id";
         $result_obrazy = $conn->query($sql_obrazy);
 
-        $sql_polubienia = "SELECT COUNT(ID_polubienia) as 'liczba_polubien' FROM Polubienia WHERE ID_postu = $post_id";
+        $sql_polubienia = "SELECT COUNT(ID_uzytkownika) as 'liczba_polubien' FROM Polubienia WHERE ID_postu = $post_id";
         $result_polubienia = $conn->query($sql_polubienia);
         $row_polubienia = $result_polubienia->fetch_assoc();
         $polubienia = $row_polubienia['liczba_polubien'];
 
-        $sql_czy_lubie = "SELECT ID_polubienia FROM Polubienia WHERE ID_postu = $post_id AND ID_uzytkownika = $id";
+        $sql_czy_lubie = "SELECT ID_uzytkownika FROM Polubienia WHERE ID_postu = $post_id AND ID_uzytkownika = $id";
         $result_czy_lubie = $conn->query($sql_czy_lubie);
         $row_czy_lubie = $result_czy_lubie->fetch_assoc();
 
